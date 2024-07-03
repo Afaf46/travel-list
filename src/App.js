@@ -81,21 +81,30 @@ function Form({ addItems }) {
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip?</h3>
-      <select onChange={(e) => setQuantity(+e.target.value)} value={quantity}>
+      <label htmlFor="quantity">Quantity:</label>
+      <select
+        id="quantity"
+        onChange={(e) => setQuantity(+e.target.value)}
+        value={quantity}
+        aria-label="Select quantity"
+      >
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <option value={num} key={num}>
             {num}
           </option>
         ))}
       </select>
+      <label htmlFor="description">Item:</label>
       <input
+        id="description"
         type="text"
         placeholder="..item"
         value={description}
         onChange={handleDescriptionChange}
+        aria-label="Item description"
       />
       {error && <p className="error">{error}</p>}
-      <button>Add</button>
+      <button type="submit">Add</button>
     </form>
   );
 }
@@ -105,10 +114,10 @@ function Packlists({ items, onDelete, onToggleItem, clear }) {
 
   let sortedItems;
   if (sortBy === "input") sortedItems = items;
-  // if (sortBy === "description")
-  //   sortedItems = items
-  //     .slice()
-  //     .sort((a, b) => a.description.localeCompare(b.description));
+  if (sortBy === "description")
+    sortedItems = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
   if (sortBy === "packed")
     sortedItems = items
       .slice()
@@ -128,12 +137,18 @@ function Packlists({ items, onDelete, onToggleItem, clear }) {
       </ul>
 
       <div className="actions">
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+        <label htmlFor="sort">Sort by:</label>
+        <select
+          id="sort"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          aria-label="Sort by"
+        >
           <option value="input">Sort by input</option>
-          {/* <option value="description">Sort by description</option> */}
+          <option value="description">Sort by description</option>
           <option value="packed">Sort by packed</option>
         </select>
-        <button className="actions" onClick={clear}>
+        <button onClick={clear} aria-label="Clear all items">
           Clear
         </button>
       </div>
@@ -148,11 +163,18 @@ function Item({ item, onDelete, onToggleItem }) {
         type="checkbox"
         checked={item.packed}
         onChange={() => onToggleItem(item.id)}
+        aria-label={`Mark ${item.description} as ${
+          item.packed ? "not packed" : "packed"
+        }`}
       />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      <button onClick={() => onDelete(item.id)} style={{ color: "red" }}>
+      <button
+        onClick={() => onDelete(item.id)}
+        style={{ color: "red" }}
+        aria-label={`Delete ${item.description}`}
+      >
         &times;
       </button>
     </li>
